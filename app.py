@@ -9,7 +9,7 @@ from keras.models import load_model
 app = Flask(__name__)
 
 target_class = ['COVID-19', 'Normal', 'Pneumonia']
-my_model = load_model("model/A_model_fold-1.h5")
+# my_model = load_model("model/A_model_fold-1.h5")
 
 imgs = 'static/img.jpg'
 
