@@ -19,13 +19,13 @@ app.secret_key = 'ini kunci rahasia'
 # imgs = 'static/img.jpg'
 
 # No caching at all for API endpoints.
-# @app.after_request
-# def add_header(response):
-#     # response.cache_control.no_store = True
-#     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-#     response.headers['Pragma'] = 'no-cache'
-#     response.headers['Expires'] = '-1'
-#     return response
+@app.after_request
+def add_header(response):
+    # response.cache_control.no_store = True
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 # def normalization(image):
 #  image = ((image - np.min(image)) / (np.max(image) - np.min(image)))
@@ -43,7 +43,7 @@ app.secret_key = 'ini kunci rahasia'
 
 @app.route("/")
 def home():
-    return "render_template('index.html')"
+    return render_template('index.html')
 
 # @app.route('/', methods=['POST'])
 # def upload_file():
