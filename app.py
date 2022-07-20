@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, abort
 import numpy as np
 
 from keras.preprocessing import image
-from keras.models import load_model
+# from keras.models import load_model
 
 project_root = os.path.dirname(__file__)
 template_path = os.path.join(project_root, 'templates')
