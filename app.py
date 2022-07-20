@@ -2,16 +2,16 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, abort
 import numpy as np
 
-from keras.preprocessing import image
-from keras.models import load_model
+# from keras.preprocessing import image
+# from keras.models import load_model
 
 
 app = Flask(__name__)
 
-target_class = ['COVID-19', 'Normal', 'Pneumonia']
-my_model = load_model("model/A_model_fold-1.h5")
+# target_class = ['COVID-19', 'Normal', 'Pneumonia']
+# my_model = load_model("model/A_model_fold-1.h5")
 
-imgs = 'static/img.jpg'
+# imgs = 'static/img.jpg'
 
 # No caching at all for API endpoints.
 @app.after_request
@@ -22,32 +22,32 @@ def add_header(response):
     response.headers['Expires'] = '-1'
     return response
 
-def normalization(image):
- image = ((image - np.min(image)) / (np.max(image) - np.min(image)))
- return image
+# def normalization(image):
+#  image = ((image - np.min(image)) / (np.max(image) - np.min(image)))
+#  return image
 
-def myPredictor():
-  if os.path.exists(imgs):
-    img = image.load_img(imgs, target_size=(224,224))
-    img = image.img_to_array(img)
-    img = normalization(img)
-    img = img.reshape(1,224,224,3)
-    preds = my_model.predict(img)
-    i = np.argmax(preds[0])
-    return target_class[i], '{:.2f}'.format(preds[0][i]*100)
+# def myPredictor():
+#   if os.path.exists(imgs):
+#     img = image.load_img(imgs, target_size=(224,224))
+#     img = image.img_to_array(img)
+#     img = normalization(img)
+#     img = img.reshape(1,224,224,3)
+#     preds = my_model.predict(img)
+#     i = np.argmax(preds[0])
+#     return target_class[i], '{:.2f}'.format(preds[0][i]*100)
 
 @app.route("/")
 def home():
     return render_template('index.html')
 
-@app.route('/', methods=['POST'])
-def upload_file():
-  os.remove(imgs)
-  uploaded_file = request.files['citra']
-  if uploaded_file.filename != '':
-    uploaded_file.save(imgs)
+# @app.route('/', methods=['POST'])
+# def upload_file():
+#   os.remove(imgs)
+#   uploaded_file = request.files['citra']
+#   if uploaded_file.filename != '':
+#     uploaded_file.save(imgs)
     
-  predict = myPredictor()
-  return render_template('index.html', predict=predict[0], score=predict[1])
+#   predict = myPredictor()
+#   return render_template('index.html', predict=predict[0], score=predict[1])
     
 app.run(debug=True)
