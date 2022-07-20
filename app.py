@@ -50,4 +50,4 @@ def upload_file():
   predict = myPredictor()
   return render_template('index.html', predict=predict[0], score=predict[1])
     
-app.run(debug=True)
+ app.run(host='0.0.0.0',port=8000, debug=True)
