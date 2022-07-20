@@ -9,15 +9,14 @@ project_root = os.path.dirname(__file__)
 template_path = os.path.join(project_root, 'templates')
 static_path = os.path.join(project_root, 'static')
 model_path = os.path.join(project_root, 'model')
-print(model_path)
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 app.secret_key = 'ini kunci rahasia'
 
 target_class = ['COVID-19', 'Normal', 'Pneumonia']
-my_model = load_model(f"{model_path}/A_model_fold-1.h5")
+# my_model = load_model(f"{model_path}/A_model_fold-1.h5")
 
-imgs = f"{static_path}/img.jpg"
+# imgs = f"{static_path}/img.jpg"
 
 # No caching at all for API endpoints.
 @app.after_request
