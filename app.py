@@ -56,4 +56,4 @@ def upload_file():
   return render_template('index.html', predict=predict[0], score=predict[1])
     
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True)
+  app.run(host='0.0.0.0',port=80, debug=True)
