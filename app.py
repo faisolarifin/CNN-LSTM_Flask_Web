@@ -44,7 +44,7 @@ def upload_file():
   
   if uploaded_file.filename != '':
     try : 
-      res = requests.post('http://128.199.123.43:7000/service', json={
+      res = requests.post('http://128.199.123.43/service', json={
           'msg' : 'success',
           'size' : img.size,
           'format' : img.format,
