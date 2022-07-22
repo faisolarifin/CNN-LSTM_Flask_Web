@@ -1,9 +1,10 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort
 import numpy as np
-
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.models import load_model
+import requests
+from PIL import Image
+from io import BytesIO
+import base64
 
 project_root = os.path.dirname(__file__)
 template_path = os.path.join(project_root, 'templates')
@@ -12,11 +13,6 @@ model_path = os.path.join(project_root, 'model')
 
 app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 app.secret_key = 'ini kunci rahasia'
-
-target_class = ['COVID-19', 'Normal', 'Pneumonia']
-my_model = load_model(f"{model_path}/A_model_fold-1.h5")
-
-imgs = f"{static_path}/img.jpg"
 
 # No caching at all for API endpoints.
 @app.after_request
@@ -27,33 +23,50 @@ def add_header(response):
     response.headers['Expires'] = '-1'
     return response
 
-def normalization(image):
- image = ((image - np.min(image)) / (np.max(image) - np.min(image)))
- return image
-
-def myPredictor():
-  if os.path.exists(imgs):
-    img = image.load_img(imgs, target_size=(224,224))
-    img = image.img_to_array(img)
-    img = normalization(img)
-    img = img.reshape(1,224,224,3)
-    preds = my_model.predict(img)
-    i = np.argmax(preds[0])
-    return target_class[i], '{:.2f}'.format(preds[0][i]*100)
-
 @app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template('index.html', data={
+      'status' : 'init'
+    })
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET', 'POST'])
 def upload_file():
-  os.remove(imgs)
+  
   uploaded_file = request.files['citra']
+  img = Image.open(uploaded_file.stream)
+  img = img.convert("L")
+  buffer = BytesIO()
+  img.save(buffer, 'png')
+  buffer.seek(0)
+
+  data = buffer.read()
+  data = base64.b64encode(data).decode()
+  
   if uploaded_file.filename != '':
-    uploaded_file.save(imgs)
-    
-  predict = myPredictor()
-  return render_template('index.html', predict=predict[0], score=predict[1])
+    try : 
+      res = requests.post('https://3.87.192.191/service', json={
+          'msg' : 'success',
+          'size' : img.size,
+          'format' : img.format,
+          'img' : data
+        }, verify=False)
+    except requests.exceptions.RequestException as e:
+      return render_template('index.html', data={
+        'status' : 'error',
+        'msg' : 'HTTPConnectionPool to backend server is failure!',
+        'err' : e,
+      })
+
+  if res.ok:
+    return render_template('index.html', data={
+      'status' : 'success',
+      'img' : f'data:image/png;base64,{data}',
+    }, res=res.json())
+
+  return render_template('index.html', data={
+      'status' : 'error',
+      'msg' : 'Nothing respons from backend server!',
+    })
     
 if __name__ == '__main__':
-  app.run(host='0.0.0.0',port=80, debug=True)
+  app.run(port=8000, debug=True)

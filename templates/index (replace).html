@@ -80,23 +80,19 @@
             </div>   
           </form>
 
-          {%if data['status'] == 'error'%}
-            <div class="alert alert-danger">{{data['msg']}}</div>
-          {%endif%}
-
           <table class="table table-bordered mt-3 text-center">
             <tr>
               <th class="text-center">Hasil Identifikasi</th>
               <th width="220" class="text-center">X-Ray</th>
             </tr>
-            {%if data['status'] == 'success'%}
+            {%if predict%}
             <tr>
               <td>
-                <p>{{res['predicted']}}</p>
-                <p>Identification Score : {{res['score']}}%</p>
+                <p>{{predict}}</p>
+                <p>Identification Score : {{score}}%</p>
               </td>
               <td>
-                <img src="{{data['img']}}" alt=".." class="img-upload">
+                <img src="{{url_for('static', filename='img.jpg')}}" alt=".." class="img-upload">
               </td>
             </tr>
             {%endif%}
