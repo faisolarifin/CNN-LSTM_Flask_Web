@@ -32,7 +32,7 @@ def upload_file():
     im_bytes = base64.b64decode(content['img'])
     im_file = BytesIO(im_bytes)
     img = Image.open(im_file).convert('RGB')
-    img = img.resize((224,224), Image.ANTIALIAS)
+    img = img.resize((224,224), Image.Resampling.NEAREST)
     #convert to array
     img = np.asarray(img)
     img = normalization(img)
