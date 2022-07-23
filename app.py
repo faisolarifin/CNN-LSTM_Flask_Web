@@ -15,13 +15,13 @@ app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 app.secret_key = 'ini kunci rahasia'
 
 # No caching at all for API endpoints.
-@app.after_request
-def add_header(response):
-    # response.cache_control.no_store = True
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '-1'
-    return response
+# @app.after_request
+# def add_header(response):
+#     # response.cache_control.no_store = True
+#     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+#     response.headers['Pragma'] = 'no-cache'
+#     response.headers['Expires'] = '-1'
+#     return response
 
 @app.route("/")
 def home():
@@ -29,9 +29,8 @@ def home():
       'status' : 'init'
     })
 
-@app.route('/', methods=['GET', 'POST'])
-def upload_file():
-  
+@app.route('/', methods=['POST'])
+def upload():
   uploaded_file = request.files['citra']
   img = Image.open(uploaded_file.stream)
   img = img.convert("L")
