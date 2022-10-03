@@ -43,7 +43,7 @@ def upload():
   
   if uploaded_file.filename != '':
     try : 
-      res = requests.post('http://128.199.123.43/service', json={
+      res = requests.post('http://shadowy-income-yme.domcloud.io/service', json={
           'msg' : 'success',
           'size' : img.size,
           'format' : img.format,

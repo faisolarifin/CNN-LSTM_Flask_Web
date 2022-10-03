@@ -23,6 +23,10 @@ def normalization(image):
   image = ((image - np.min(image)) / (np.max(image) - np.min(image)))
   return image
 
+@app.route('/')
+def index():
+  return "deep learning"
+
 @app.route('/service', methods=['GET', 'POST'])
 def upload_file():
   #get post from api
@@ -32,7 +36,7 @@ def upload_file():
     im_bytes = base64.b64decode(content['img'])
     im_file = BytesIO(im_bytes)
     img = Image.open(im_file).convert('RGB')
-    img = img.resize((224,224), Image.Resampling.NEAREST)
+    img = img.resize((224,224), Image.NEAREST)
     #convert to array
     img = np.asarray(img)
     img = normalization(img)
@@ -51,4 +55,4 @@ def upload_file():
   })
     
 if __name__ == '__main__':
-  app.run(port=7000, debug=True)
+  app.run(host='0.0.0.0', port=7000, debug=True)
